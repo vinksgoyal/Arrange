@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply scroll-smooth;
+  }
+  body {
+    @apply bg-surface-subtle text-ink dark:bg-dark-bg dark:text-white;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent/50 ring-offset-2 ring-offset-surface;
+  }
+  ::selection {
+    @apply bg-accent/20;
+  }
+
+  /*
+   * Dark-mode fallbacks for the ink text tokens.
+   * These are near-black by default, so any element using them without its
+   * own `dark:` override went dark-text-on-dark-background (Landing hero,
+   * Dropzone labels, SettingsPanel field labels, PdfPreview meta text).
+   * Scoped to @layer base so any component-level `dark:text-*` class still
+   * wins — Tailwind's utilities layer is emitted after base, so explicit
+   * per-component overrides always take precedence over these defaults.
+   */
+  .dark .text-ink {
+    color: #ffffff;
+  }
+  .dark .text-ink-muted {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .dark .text-ink-faint {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  
+  .logo-badge {
+    @apply bg-white text-black rounded-lg p-2;
+  }
+
+  /* Override any dark mode inheritance */
+  .dark .logo-badge {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Ensure SVG icons inside logo badge stay black */
+  .logo-badge svg {
+    color: #000000 !important;
+    fill: #000000 !important;
+  }
+
+  /* If the logo uses text instead of SVG */
+  .logo-badge * {
+    color: #000000 !important;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

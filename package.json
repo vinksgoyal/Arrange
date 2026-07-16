@@ -1,0 +1,40 @@
+{
+  "name": "arrange",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Arrange multiple images onto A4 pages and export a print-ready PDF, without cropping a single one.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zustand": "^4.5.5",
+    "react-dropzone": "^14.2.9",
+    "framer-motion": "^11.11.17",
+    "pdf-lib": "^1.17.1",
+    "react-hot-toast": "^2.4.1",
+    "lucide-react": "^0.462.0",
+    "clsx": "^2.1.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.15.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "@vitejs/plugin-react": "^4.3.3",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
