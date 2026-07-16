@@ -6,3 +6,6 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .vercel
+*.tsbuildinfo
+vite.config.d.ts
+vite.config.js
