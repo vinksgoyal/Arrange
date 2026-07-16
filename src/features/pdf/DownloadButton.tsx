@@ -1,58 +1,44 @@
 import { useState } from 'react';
-import { Download, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { Download } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
-import { useLayout } from '@/hooks/useLayout';
-import { generatePdf } from '@/lib/pdfGenerator';
+import { generatePdf, downloadPdf } from '@/lib/pdfGenerator';
+import { computeLayout } from '@/lib/layoutEngine';
 import { Button } from '@/components/ui/Button';
 
 export function DownloadButton() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const images = useAppStore((s) => s.images);
   const settings = useAppStore((s) => s.settings);
-  const layout = useLayout();
-  const [progress, setProgress] = useState<number | null>(null);
 
   const handleDownload = async () => {
-    if (layout.pages.length === 0) return;
+    if (images.length === 0) return;
+    
+    setIsLoading(true);
     setProgress(0);
+    
     try {
-      const blob = await generatePdf(layout, settings, { onProgress: setProgress });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `arrange-${new Date().toISOString().slice(0, 10)}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-      toast.success('PDF downloaded.');
-    } catch {
-      toast.error('Something went wrong generating the PDF.');
+      const result = computeLayout(images, settings);
+      const blob = await generatePdf(result, settings, { onProgress: setProgress });
+      downloadPdf(blob, 'arranged-images.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
     } finally {
-      setProgress(null);
+      setIsLoading(false);
+      setProgress(0);
     }
   };
-
-  const isGenerating = progress !== null;
 
   return (
     <Button
       variant="primary"
-      size="lg"
-      onClick={handleDownload}
-      disabled={layout.pages.length === 0 || isGenerating}
+      size="md"
       className="w-full"
+      onClick={handleDownload}
+      disabled={isLoading || images.length === 0}
     >
-      {isGenerating ? (
-        <>
-          <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />
-          Generating… {Math.round((progress ?? 0) * 100)}%
-        </>
-      ) : (
-        <>
-          <Download className="h-4 w-4" strokeWidth={1.75} />
-          Download PDF ({layout.pages.length} page{layout.pages.length === 1 ? '' : 's'})
-        </>
-      )}
+      <Download className="h-4 w-4" strokeWidth={1.75} />
+      {isLoading ? `Generating... ${progress}%` : 'Download PDF'}
     </Button>
   );
 }
