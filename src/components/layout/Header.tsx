@@ -1,8 +1,13 @@
-import { FileStack, Moon, Sun, RotateCcw } from 'lucide-react';
+import { FileStack, Home, Moon, Sun, RotateCcw } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { Button } from '@/components/ui/Button';
 
-export function Header() {
+interface HeaderProps {
+  showHome?: boolean;
+  onHome?: () => void;
+}
+
+export function Header({ showHome = false, onHome }: HeaderProps) {
   const isDarkMode = useAppStore((s) => s.isDarkMode);
   const toggleDarkMode = useAppStore((s) => s.toggleDarkMode);
   const clearAll = useAppStore((s) => s.clearAll);
@@ -18,6 +23,12 @@ export function Header() {
       </div>
 
       <div className="flex items-center gap-1.5">
+        {showHome && (
+          <Button variant="ghost" size="sm" onClick={onHome} aria-label="Go to home">
+            <Home className="h-4 w-4" strokeWidth={1.75} />
+            Home
+          </Button>
+        )}
         {hasImages && (
           <Button
             variant="ghost"

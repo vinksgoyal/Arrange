@@ -102,10 +102,64 @@ export function downloadPdf(blob: Blob, filename: string = 'arranged.pdf'): void
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export async function previewPdf(layout: LayoutResult, settings: PageSettings): Promise<string> {
   const blob = await generatePdf(layout, settings);
   return URL.createObjectURL(blob);
+}
+
+export interface ImagePdfItem {
+  file: File;
+  scale: number;
+  previewUrl: string;
+}
+
+export async function generateImagePdf(items: ImagePdfItem[], onProgress?: (progress: number) => void): Promise<Blob> {
+  if (items.length === 0) throw new Error('No images to convert');
+
+  const pdfDoc = await PDFDocument.create();
+  const pageWidth = 595.28;
+  const pageHeight = 841.89;
+  const padding = 28;
+
+  for (let index = 0; index < items.length; index += 1) {
+    const { file, scale: sizeScale } = items[index];
+    const bytes = await file.arrayBuffer();
+    let image;
+
+    if (file.type === 'image/png') {
+      image = await pdfDoc.embedPng(bytes);
+    } else if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+      image = await pdfDoc.embedJpg(bytes);
+    } else {
+      const objectUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.src = objectUrl;
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error(`Could not read ${file.name}`));
+      });
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Could not prepare image');
+      context.drawImage(img, 0, 0);
+      const jpegData = await fetch(canvas.toDataURL('image/jpeg', 0.92)).then((response) => response.arrayBuffer());
+      image = await pdfDoc.embedJpg(jpegData);
+      URL.revokeObjectURL(objectUrl);
+    }
+
+    const page = pdfDoc.addPage([pageWidth, pageHeight]);
+    const scale = Math.min((pageWidth - padding * 2) / image.width, (pageHeight - padding * 2) / image.height) * sizeScale;
+    const width = image.width * scale;
+    const height = image.height * scale;
+    page.drawImage(image, { x: (pageWidth - width) / 2, y: (pageHeight - height) / 2, width, height });
+    onProgress?.(Math.round(((index + 1) / items.length) * 100));
+  }
+
+  const pdfBytes = await pdfDoc.save();
+  return new Blob([pdfBytes.buffer as ArrayBuffer], { type: 'application/pdf' });
 }

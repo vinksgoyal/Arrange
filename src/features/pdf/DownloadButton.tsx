@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Download } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useAppStore } from '@/store/useAppStore';
 import { generatePdf, downloadPdf } from '@/lib/pdfGenerator';
 import { computeLayout } from '@/lib/layoutEngine';
@@ -23,6 +24,7 @@ export function DownloadButton() {
       downloadPdf(blob, 'arranged-images.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
+      toast.error('Could not generate the PDF. Check that all images are readable.');
     } finally {
       setIsLoading(false);
       setProgress(0);
