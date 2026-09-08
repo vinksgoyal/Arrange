@@ -39,7 +39,7 @@ export const useAppStore = create<AppState>()(
       images: [],
       settings: DEFAULT_SETTINGS,
       selectedIds: new Set(),
-      isDarkMode: false,
+      isDarkMode: true,
       lastRemoved: null,
 
       addImages: (items) =>
@@ -101,6 +101,11 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'arrange-settings',
+      version: 1,
+      migrate: (persistedState) => {
+        const state = persistedState as { settings?: PageSettings; isDarkMode?: boolean };
+        return { ...state, isDarkMode: true };
+      },
       partialize: (state) => ({ settings: state.settings, isDarkMode: state.isDarkMode }),
     },
   ),

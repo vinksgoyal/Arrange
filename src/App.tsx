@@ -6,13 +6,14 @@ import { Landing } from '@/features/landing/Landing';
 import { ImageToPdf } from '@/features/pdf/ImageToPdf';
 import { PdfEditor } from '@/features/pdf/PdfEditor';
 import { BlurBackground } from '@/features/blur/BlurBackground';
+import { ImageToolkit } from '@/features/tools/ImageToolkit';
 import { Workspace } from '@/pages/Workspace';
 
 export default function App() {
   const hasImages = useAppStore((s) => s.images.length > 0);
   const isDarkMode = useAppStore((s) => s.isDarkMode);
   const clearAll = useAppStore((s) => s.clearAll);
-  const [activeTool, setActiveTool] = useState<'home' | 'image-to-pdf' | 'pdf-editor' | 'blur'>('home');
+  const [activeTool, setActiveTool] = useState<'home' | 'image-to-pdf' | 'pdf-editor' | 'blur' | 'toolkit'>('home');
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDarkMode);
@@ -35,11 +36,14 @@ export default function App() {
         <PdfEditor onBack={() => setActiveTool('home')} />
       ) : activeTool === 'blur' ? (
         <BlurBackground onBack={() => setActiveTool('home')} />
+      ) : activeTool === 'toolkit' ? (
+        <ImageToolkit onBack={() => setActiveTool('home')} />
       ) : (
         <Landing
           onOpenImageToPdf={() => setActiveTool('image-to-pdf')}
           onOpenPdfEditor={() => setActiveTool('pdf-editor')}
           onOpenBlur={() => setActiveTool('blur')}
+          onOpenToolkit={() => setActiveTool('toolkit')}
         />
       )}
       <Toaster
