@@ -1,5 +1,5 @@
 import { type DragEvent, useState } from 'react';
-import { X, GripVertical, Check } from 'lucide-react';
+import { X, GripVertical, Check, RotateCw } from 'lucide-react';
 import { clsx } from 'clsx';
 import type { ImageItem } from '@/types';
 import { formatDimensions } from '@/lib/imageUtils';
@@ -10,6 +10,7 @@ interface ImageCardProps {
   selected: boolean;
   onToggleSelect: (id: string) => void;
   onRemove: (id: string) => void;
+  onRotate: (id: string) => void;
   onDragStart: (index: number) => void;
   onDragOver: (index: number) => void;
   onDragEnd: () => void;
@@ -22,6 +23,7 @@ export function ImageCard({
   selected,
   onToggleSelect,
   onRemove,
+  onRotate,
   onDragStart,
   onDragOver,
   onDragEnd,
@@ -70,6 +72,16 @@ export function ImageCard({
 
       <button
         type="button"
+        onClick={() => onRotate(item.id)}
+        aria-label={`Rotate ${item.name}`}
+        title="Rotate image"
+        className="absolute bottom-2 left-2 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-black/45 text-white opacity-0 backdrop-blur transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 hover:bg-black/65"
+      >
+        <RotateCw className="h-3.5 w-3.5" />
+      </button>
+
+      <button
+        type="button"
         onClick={() => onRemove(item.id)}
         aria-label={`Remove ${item.name}`}
         className={clsx(
@@ -94,6 +106,7 @@ export function ImageCard({
             src={item.previewUrl}
             alt={item.name}
             className="h-full w-full object-contain"
+            style={{ transform: `rotate(${item.rotation ?? 0}deg)` }}
             loading="lazy"
             draggable={false}
           />

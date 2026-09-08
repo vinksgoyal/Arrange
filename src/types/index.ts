@@ -8,6 +8,8 @@ export interface ImageItem {
   /** Natural pixel dimensions, read once the image has decoded. */
   width: number;
   height: number;
+  /** Clockwise quarter-turns applied everywhere the image is rendered. */
+  rotation: 0 | 90 | 180 | 270;
   /** Order the user has arranged the image in (drag-reorder). */
   order: number;
   status: 'loading' | 'ready' | 'error';

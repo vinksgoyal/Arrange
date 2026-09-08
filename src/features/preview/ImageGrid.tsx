@@ -12,6 +12,7 @@ export function ImageGrid() {
   const selectAll = useAppStore((s) => s.selectAll);
   const clearSelection = useAppStore((s) => s.clearSelection);
   const removeImages = useAppStore((s) => s.removeImages);
+  const updateImage = useAppStore((s) => s.updateImage);
   const reorderImages = useAppStore((s) => s.reorderImages);
   const undoRemove = useAppStore((s) => s.undoRemove);
   const lastRemoved = useAppStore((s) => s.lastRemoved);
@@ -98,6 +99,10 @@ export function ImageGrid() {
             selected={selectedIds.has(item.id)}
             onToggleSelect={toggleSelected}
             onRemove={(id) => removeImages([id])}
+            onRotate={(id) => {
+              const image = images.find((item) => item.id === id);
+              if (image) updateImage(id, { rotation: (((image.rotation ?? 0) + 90) % 360) as 0 | 90 | 180 | 270 });
+            }}
             onDragStart={setDragIndex}
             onDragOver={setOverIndex}
             onDragEnd={handleDrop}

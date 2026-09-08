@@ -51,7 +51,7 @@ function usableContentSizeMm(settings: PageSettings) {
 /** Solve the row height that makes a set of images' scaled widths, plus spacing, equal targetWidth. */
 function solveRowHeight(images: ImageItem[], targetWidth: number, spacing: number): number {
   const totalSpacing = spacing * Math.max(0, images.length - 1);
-  const sumAspect = images.reduce((sum, img) => sum + img.width / img.height, 0);
+  const sumAspect = images.reduce((sum, img) => sum + getEffectiveWidth(img) / getEffectiveHeight(img), 0);
   // sum(height * aspect_i) + totalSpacing = targetWidth  =>  height = (targetWidth - totalSpacing) / sumAspect
   const availableWidth = Math.max(targetWidth - totalSpacing, 1);
   return availableWidth / sumAspect;
@@ -59,7 +59,7 @@ function solveRowHeight(images: ImageItem[], targetWidth: number, spacing: numbe
 
 function rowWidthAtHeight(images: ImageItem[], height: number, spacing: number): number {
   const totalSpacing = spacing * Math.max(0, images.length - 1);
-  const imagesWidth = images.reduce((sum, img) => sum + (img.width / img.height) * height, 0);
+  const imagesWidth = images.reduce((sum, img) => sum + (getEffectiveWidth(img) / getEffectiveHeight(img)) * height, 0);
   return imagesWidth + totalSpacing;
 }
 
@@ -145,7 +145,7 @@ export function computeLayout(images: ImageItem[], settings: PageSettings): Layo
     for (const row of rowsOnPage) {
       let x = 0;
       for (const img of row.images) {
-        const width = (img.width / img.height) * row.height;
+        const width = (getEffectiveWidth(img) / getEffectiveHeight(img)) * row.height;
         placed.push({ image: img, x, y, width, height: row.height });
         totalArea += width * row.height;
         x += width + spacingMm;
@@ -159,3 +159,11 @@ export function computeLayout(images: ImageItem[], settings: PageSettings): Layo
 }
 
 export { usableContentSizeMm };
+
+function getEffectiveWidth(image: ImageItem): number {
+  return image.rotation % 180 === 0 ? image.width : image.height;
+}
+
+function getEffectiveHeight(image: ImageItem): number {
+  return image.rotation % 180 === 0 ? image.height : image.width;
+}

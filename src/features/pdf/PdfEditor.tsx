@@ -46,7 +46,7 @@ export function PdfEditor({ onBack }: PdfEditorProps) {
       keptIndexes.forEach((originalIndex, newIndex) => {
         const page = pdf.getPage(newIndex);
         const rotation = rotations[originalIndex] || 0;
-        if (rotation) page.setRotation(degrees(page.getRotation().angle + rotation));
+        if (rotation) page.setRotation(degrees((page.getRotation().angle + rotation) % 360));
       });
       const bytes = await pdf.save();
       const blob = new Blob([bytes.buffer as ArrayBuffer], { type: 'application/pdf' });

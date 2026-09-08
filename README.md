@@ -1,91 +1,111 @@
 # Arrange
 
-> Transform multiple images into clean, print-ready PDFs in seconds.
+Arrange is a browser-first image workspace for turning loose files into clean, print-ready documents. It keeps processing local, gives you control over image order and rotation, and makes the common image-to-PDF workflow quick.
 
-Arrange is a modern web application that automatically organizes multiple images onto A4 pages and generates a high-quality PDF optimized for printing.
+[Open the repository on GitHub](https://github.com/vinksgoyal/Arrange)
 
-Unlike traditional image-to-PDF converters, Arrange focuses on **smart page layouts**—keeping every image fully visible, preserving aspect ratios, and maximizing paper usage without manual resizing or alignment.
+## What it does
 
-## ✨ Features
+### Arrange for print
 
-* 📄 Generate print-ready A4 PDFs
-* 🖼️ Preserve original image quality and aspect ratio
-* ✂️ No cropping or stretching
-* 🧠 Intelligent automatic image arrangement
-* 📑 Multi-page PDF generation
-* ⚡ Fast, client-side processing
-* 📱 Responsive design
-* 🌙 Clean and minimal interface
-* 🔒 Your images never leave your device
+- Upload multiple PNG, JPEG, WEBP, and HEIC images.
+- Drag images into the order you need.
+- Rotate individual images without changing their source files.
+- Choose A4, Letter, or Legal paper sizes.
+- Adjust margins, spacing, density, and page orientation.
+- Preview the generated layout before downloading.
+- Export a print-ready PDF without cropping or stretching images.
 
-## 🚀 Why Arrange?
+### Image to PDF
 
-Students often spend valuable time manually arranging downloaded images in Canva, Word, or PowerPoint before printing assignments.
+- Create one A4 portrait page per image.
+- Keep pages portrait while rotating images inside the page.
+- Resize each image before export.
+- Reorder, replace, or remove images.
+- Download the finished PDF locally.
 
-Arrange simplifies the entire process:
+### Blur image
 
-1. Select your images.
-2. Arrange automatically.
-3. Generate a PDF.
-4. Print.
+- Blur the complete image in real time.
+- Adjust blur strength with a slider.
+- Preview the result before downloading.
+- Export a PNG without uploading the image anywhere.
 
-The result is a neat, professional document that uses fewer pages and requires almost no manual effort.
+The PDF editor is present in the codebase but currently marked **Coming soon** in the interface.
 
-## 🛠 Tech Stack
+## Privacy
 
-* React
-* TypeScript
-* Vite
-* Tailwind CSS
-* Framer Motion
-* PDF Generation Library
-* React Dropzone
+Arrange is designed for local browser processing. Images are read by the browser and are not sent to an application server by the current tools.
 
-## 📸 Preview
+## Stack
 
-*Add screenshots or a GIF showcasing the workflow.*
+- React 19
+- TypeScript
+- Vite
+- Tailwind CSS
+- Zustand
+- Framer Motion
+- pdf-lib
+- react-dropzone
+- Lucide React
 
-## 💻 Getting Started
+## Run locally
 
-Clone the repository:
-
-```bash
-git clone https://github.com/your-username/arrange.git
-```
-
-Install dependencies:
+Requirements: Node.js 18 or newer and npm.
 
 ```bash
-npm install
-```
-
-Start the development server:
-
-```bash
+git clone https://github.com/vinksgoyal/Arrange.git
+cd Arrange
 npm install
 npm run dev
 ```
 
-Create a production build:
+Open the local URL printed by Vite, usually `http://localhost:5173`.
+
+## Production build
 
 ```bash
 npm run build
+npm run preview
 ```
 
-## 💡 Roadmap
+Useful checks:
 
-* More page sizes
-* Custom margins and spacing
-* Image captions
-* Page numbering
-* Multiple layout modes
-* Offline support (PWA)
-* Batch export improvements
+```bash
+npm run lint
+npm run build
+```
 
-## 🤝 Contributing
+## Project map
 
-Contributions, ideas, and bug reports are always welcome. Feel free to open an issue or submit a pull request.
+```text
+src/
+  components/       Shared layout and UI controls
+  features/         Landing, upload, preview, PDF, and blur workflows
+  hooks/            Upload and layout state helpers
+  lib/              Image, layout, and PDF processing
+  pages/            Workspace composition
+  store/            Persistent application state
+  types/            Shared TypeScript models
+```
 
-## 📄 License
+## Roadmap
 
-MIT License.
+Arrange is intentionally structured as a growing toolbox. Planned directions include:
+
+- More image cleanup tools
+- Crop, resize, and compression workflows
+- Contact sheets and batch export presets
+- More PDF operations
+- Saved local projects
+- Keyboard-first workflows
+- Offline/PWA support
+- Expanded export formats
+
+## Contributing
+
+Issues, ideas, and pull requests are welcome. Keep changes focused, run `npm run lint` and `npm run build`, and describe any user-facing behavior changes in the pull request.
+
+## License
+
+MIT

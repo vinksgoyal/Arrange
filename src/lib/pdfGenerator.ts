@@ -1,4 +1,4 @@
-import { PDFDocument } from 'pdf-lib';
+import { degrees, PDFDocument } from 'pdf-lib';
 import { LayoutResult, PageSettings, MARGIN_MM, PAGE_DIMENSIONS_MM } from '@/types';
 
 export async function generatePdf(
@@ -74,12 +74,18 @@ export async function generatePdf(
         const yPt = (placedImage.y + marginMM) * 2.83465;
         const widthPt = placedImage.width * 2.83465;
         const heightPt = placedImage.height * 2.83465;
+        const rotation = placedImage.image.rotation ?? 0;
+        const drawWidth = rotation % 180 === 0 ? widthPt : heightPt;
+        const drawHeight = rotation % 180 === 0 ? heightPt : widthPt;
+        const centerX = xPt + widthPt / 2;
+        const centerY = pageHeight - yPt - heightPt / 2;
         
         page.drawImage(image, {
-          x: xPt,
-          y: pageHeight - yPt - heightPt,
+          x: centerX - drawWidth / 2,
+          y: centerY - drawHeight / 2,
           width: widthPt,
           height: heightPt,
+          rotate: degrees(rotation),
         });
         
       } catch (error) {
@@ -114,18 +120,21 @@ export interface ImagePdfItem {
   file: File;
   scale: number;
   previewUrl: string;
+  rotation: 0 | 90 | 180 | 270;
+  width: number;
+  height: number;
 }
 
 export async function generateImagePdf(items: ImagePdfItem[], onProgress?: (progress: number) => void): Promise<Blob> {
   if (items.length === 0) throw new Error('No images to convert');
 
   const pdfDoc = await PDFDocument.create();
-  const pageWidth = 595.28;
-  const pageHeight = 841.89;
+  const portraitWidth = 595.28;
+  const portraitHeight = 841.89;
   const padding = 28;
 
   for (let index = 0; index < items.length; index += 1) {
-    const { file, scale: sizeScale } = items[index];
+    const { file, scale: sizeScale, rotation = 0 } = items[index];
     const bytes = await file.arrayBuffer();
     let image;
 
@@ -152,11 +161,17 @@ export async function generateImagePdf(items: ImagePdfItem[], onProgress?: (prog
       URL.revokeObjectURL(objectUrl);
     }
 
+    const effectiveWidth = rotation % 180 === 0 ? image.width : image.height;
+    const effectiveHeight = rotation % 180 === 0 ? image.height : image.width;
+    const pageWidth = portraitWidth;
+    const pageHeight = portraitHeight;
     const page = pdfDoc.addPage([pageWidth, pageHeight]);
-    const scale = Math.min((pageWidth - padding * 2) / image.width, (pageHeight - padding * 2) / image.height) * sizeScale;
+    const scale = Math.min((pageWidth - padding * 2) / effectiveWidth, (pageHeight - padding * 2) / effectiveHeight) * sizeScale;
     const width = image.width * scale;
     const height = image.height * scale;
-    page.drawImage(image, { x: (pageWidth - width) / 2, y: (pageHeight - height) / 2, width, height });
+    const drawWidth = rotation % 180 === 0 ? width : height;
+    const drawHeight = rotation % 180 === 0 ? height : width;
+    page.drawImage(image, { x: (pageWidth - drawWidth) / 2, y: (pageHeight - drawHeight) / 2, width, height, rotate: degrees(rotation) });
     onProgress?.(Math.round(((index + 1) / items.length) * 100));
   }
 

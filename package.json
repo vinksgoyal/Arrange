@@ -11,15 +11,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.11.17",
+    "lucide-react": "^0.462.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "zustand": "^4.5.5",
     "react-dropzone": "^14.2.9",
-    "framer-motion": "^11.11.17",
-    "pdf-lib": "^1.17.1",
     "react-hot-toast": "^2.4.1",
-    "lucide-react": "^0.462.0",
-    "clsx": "^2.1.1"
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

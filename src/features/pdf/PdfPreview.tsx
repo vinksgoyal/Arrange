@@ -92,6 +92,7 @@ export function PdfPreview() {
                   top: placed.y * pxPerMm,
                   width: placed.width * pxPerMm,
                   height: placed.height * pxPerMm,
+                  transform: `rotate(${placed.image.rotation ?? 0}deg)`,
                 }}
               />
             ))}

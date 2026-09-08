@@ -24,6 +24,7 @@ export function loadImageItem(file: File, order: number): Promise<ImageItem> {
       name: file.name,
       width: 0,
       height: 0,
+      rotation: 0,
       order,
       status: 'loading',
     };
